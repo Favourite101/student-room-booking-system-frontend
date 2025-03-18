@@ -1,0 +1,89 @@
+.student {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    transition: transform 0.2s;
+    height: 350px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .student:hover {
+    transform: translateY(-5px);
+  }
+  
+  .student-image {
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+  }
+  
+  .student-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: fill;
+  }
+  
+  .student-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.1),
+      rgba(0, 0, 0, 0.8)
+    );
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+  
+  .student:hover .student-overlay {
+    opacity: 1;
+  }
+  
+  
+  .student-info {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .student-info h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .student-info h5 {
+    color: #999;
+    font-size: 0.9rem;
+  }
+
+  .view-student {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    margin: 0;
+    padding: 0.2rem;
+    background-color: #6eb44c;
+  }
+  
+  @media (max-width: 768px) {
+    .student {
+      font-size: 0.9rem;
+    }
+  
+    .student-info {
+      padding: 0.75rem;
+    }
+  
+  }

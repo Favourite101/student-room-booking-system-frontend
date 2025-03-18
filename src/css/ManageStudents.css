@@ -1,0 +1,251 @@
+  .manage-students {
+    padding: 2rem 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .search-form {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    display: flex;
+    gap: 1rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+  }
+  
+  .search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #666;
+  }
+  
+  .search-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #086647;
+    color: white;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    white-space: nowrap;
+  }
+  
+  .search-button:hover {
+    background-color: #6eb44c;
+  }
+  
+  
+  @media (max-width: 639px) {
+    .home {
+      padding: 1rem 0;
+    }
+  
+    .search-form {
+      margin-bottom: 1rem;
+    }
+
+    .students-grid {
+      justify-content: center !important;
+    }
+  }
+  
+  .students-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
+    gap: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: left;
+  }
+
+  .add-student {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+    height: 350px;
+    width: 220px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 8rem; /* Big Plus Sign */
+    font-weight: bold;
+    background-color: #1a1a1a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+
+  .no-students {
+    height: 300px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    width: 100%;
+  }
+
+  .add-student:hover {
+    color: white;
+    transform: scale(0.9);
+  }
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(25, 27, 25, 0.9),
+      rgba(13, 13, 13, 0.9)
+    );
+    opacity: 0;
+    transition: opacity 0.2s;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-overlay {
+    opacity: 1;
+  }
+
+  /* Add this to your existing CSS */
+
+/* Edit/Delete Modal (Popover Style) */
+.edit-delete-modal {
+  position: absolute;
+  top: 100%; /* Position below the student card */
+  right: 0; /* Align to the right of the student card */
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  z-index: 1000; /* Ensure it appears above other elements */
+  width: 200px; /* Adjust width as needed */
+}
+
+.edit-delete-modal button {
+  display: block;
+  width: 100%;
+  padding: 0.2rem;
+  margin: 0.95rem 0;
+  background-color: #069f09;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-delete-modal input {
+  display: block;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0.1rem;
+  margin: 0.95rem 0;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-delete-modal button:hover {
+  background-color: #93db88;
+}
+
+.edit-delete-modal button.delete {
+  background-color: #ff4d4d;
+}
+
+.edit-delete-modal button.delete:hover {
+  background-color: #f57d7d;
+}
+
+/* Close button for the modal */
+.edit-delete-modal button.close {
+  background-color: transparent;
+  color: #666;
+  text-align: right;
+  padding: 0;
+  margin: 0;
+}
+
+.edit-delete-modal button.close:hover {
+  color: #999;
+}
+
+.edit-delete-modal-content {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.edit-delete-modal-content button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-delete-modal-content button:hover {
+  background-color: #444;
+}
+
+.edit-delete-modal-content button.delete {
+  background-color: #ff4d4d;
+}
+
+.edit-delete-modal-content button.delete:hover {
+  background-color: #ff6666;
+}
+
+.edit-delete-modal-content button.close {
+  background-color: transparent;
+  color: #666;
+  text-align: right;
+  padding: 0;
+  margin: 0;
+}
+
+.edit-delete-modal-content button.close:hover {
+  color: #999;
+}
+
+.close-button {
+  background-color: #666 !important;
+}
+
+.close-button:hover {
+  background-color: #999 !important;
+}
