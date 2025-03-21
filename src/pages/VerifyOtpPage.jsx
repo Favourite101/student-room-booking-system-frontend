@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"; // Import useEffect
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyOtp } from "../api/ForgotPasswordService";
+import { verifyOtp } from "../api/forgotPasswordService";
 import SuccessMessage from "../components/SuccessMessage"; // Import SuccessMessage
 import ErrorMessage from "../components/ErrorMessage"; // Import ErrorMessage
 
