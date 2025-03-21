@@ -35,16 +35,23 @@ jobs:
           node -v
           npm -v
 
-      - name: Build And Deploy
-        id: builddeploy
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_YELLOW_WAVE_08D6FD30F }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          app_location: "/"
-          api_location: ""
-          output_location: "dist"
+      - name: Build the application
+        run: npm run build
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+      - name: Deploy to Azure Static Web Apps
+        env:
+          AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_YELLOW_WAVE_08D6FD30F }}
+        run: |
+          echo "Deploying to Azure Static Web Apps..."
+          az staticwebapp deploy \
+            --api-token $AZURE_STATIC_WEB_APPS_API_TOKEN \
+            --app-location "/" \
+            --output-location "dist"
+          echo "Deployment completed!"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
