@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"; // Import useEffect
 import { useNavigate } from "react-router-dom";
-import { verifyEmail } from "../api/ForgotPasswordService";
+import { verifyEmail } from "../api/forgotPasswordService";
 import SuccessMessage from "../components/SuccessMessage";
 import ErrorMessage from "../components/ErrorMessage";
 
