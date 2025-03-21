@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/v1/students';
+const BASE_URL = 'https://room-booking-backend-ffbncsabfwf9h8f0.canadacentral-01.azurewebsites.net/api/v1/students';
 
 export const getStudents = async () => {
     try {
@@ -12,8 +12,9 @@ export const getStudents = async () => {
         }
         const data = await response.json();
         return data;
+        // eslint-disable-next-line no-unused-vars
     } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
+        console.error("Error");
     }
 };
 
@@ -31,8 +32,9 @@ export const getStudentByName = async (name) => {
 
         const data = await response.json();
         return data;
+        // eslint-disable-next-line no-unused-vars
     } catch (error) {
-        console.error("Error fetching student by name:", error);
+        console.error("Error.");
         return null;
     }
 };
@@ -61,8 +63,9 @@ export const createStudent = async (studentData, file) => {
         }
 
         return await response.json();
+        // eslint-disable-next-line no-unused-vars
     } catch (error) {
-        console.error("Error adding student:", error);
+        console.error("Error.");
         return null;
     }
 };
@@ -85,8 +88,9 @@ export const updateStudent = async (studentId, studentDto) => {
         }
 
         return await response.json();
+        // eslint-disable-next-line no-unused-vars
     } catch (error) {
-        console.error("Error updating student:", error);
+        console.error("Error.");
         return null;
     }
 };
@@ -105,8 +109,9 @@ export const deleteStudent = async (studentId) => {
         }
 
         return { success: true };
+        // eslint-disable-next-line no-unused-vars
     } catch (error) {
-        console.error("Error deleting student:", error);
+        console.error("Error.");
         return null;
     }
 };

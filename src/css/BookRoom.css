@@ -71,6 +71,10 @@
   background-color: #6eb44c;
 }
 
+.note {
+  align-self: center;
+}
+
 /* Daily Swap Section */
 .daily-bookings {
     margin-top: 2rem;

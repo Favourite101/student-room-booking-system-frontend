@@ -1,0 +1,30 @@
+/* Footer Styles */
+.footer {
+    background: rgba(26, 26, 26, 0.8); /* Semi-transparent background */
+    padding: 2rem 2rem; /* Increased padding to make navbar taller */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
+    backdrop-filter: blur(10px); /* Blur effect for modern glassmorphism */
+    position: sticky;
+    top: 0;
+    z-index: -1000; /* Ensure it stays above other content */
+    height: 80px;
+}
+
+.footer p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9); /* Slightly transparent text */
+}
+
+.footer p:first-child {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.name {
+    font-family: cursive;
+    font-size: 1rem;
+}

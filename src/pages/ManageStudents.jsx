@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getStudents, getStudentByName, createStudent, updateStudent, deleteStudent } from '../api/studentService';
 import Student from '../components/Student';
+import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
+import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
 import '../css/ManageStudents.css';
 import { Link } from 'react-router-dom';
 
@@ -20,6 +22,8 @@ function ManageStudents() {
         image: '',
     });
     const [file, setFile] = useState(null);
+    const [success, setSuccess] = useState(null); // State for success message
+    const [error, setError] = useState(null); // State for error message
 
     // Fetch students on component mount
     useEffect(() => {
@@ -27,9 +31,9 @@ function ManageStudents() {
             try {
                 const data = await getStudents();
                 setStudents(data);
-                console.log('Students:', data);
+                // eslint-disable-next-line no-unused-vars
             } catch (error) {
-                console.log('Error fetching students:', error);
+                console.log('Error.');
             }
         };
         fetchStudents();
@@ -43,10 +47,12 @@ function ManageStudents() {
             if (data) {
                 setStudents(data);
             } else {
-                console.log('No student found!');
+                setError('No student found!');
             }
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.log('Search failed:', error);
+            setError('Search failed. Please try again.');
+            console.log('Error.');
         }
     };
 
@@ -60,9 +66,49 @@ function ManageStudents() {
         setFile(e.target.files[0]);
     };
 
+    // Validate email format
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
+    // Validate phone number format (11 digits)
+    const validatePhoneNumber = (phone) => {
+        const regex = /^\d{11}$/;
+        return regex.test(phone);
+    };
+
+    // Validate matric number format (e.g., 22/0345)
+    const validateMatricNumber = (matricNo) => {
+        const regex = /^\d{2}\/\d{4}$/;
+        return regex.test(matricNo);
+    };
+
     // Handle adding a new student
     const handleAddStudent = async (e) => {
         e.preventDefault();
+
+        // Input validation
+        if (!newStudent.name || !newStudent.matricNo || !newStudent.email || !newStudent.phone || !file) {
+            setError('All fields are required.');
+            return;
+        }
+
+        if (!validateMatricNumber(newStudent.matricNo)) {
+            setError('Matric number must be in the format "22/0345".');
+            return;
+        }
+
+        if (!validateEmail(newStudent.email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
+        if (!validatePhoneNumber(newStudent.phone)) {
+            setError('Phone number must be 11 digits.');
+            return;
+        }
+
         try {
             const data = await createStudent(newStudent, file);
             if (data) {
@@ -70,11 +116,14 @@ function ManageStudents() {
                 setShowAddModal(false);
                 setNewStudent({ name: '', matricNo: '', phone: '', email: '', image: '' });
                 setFile(null);
+                setSuccess('Student added successfully!');
             } else {
-                console.log('Failed to add student.');
+                setError('Failed to add student. Please try again.');
             }
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.log('Error adding student:', error);
+            setError('Error adding student. Please try again.');
+            console.log('Error.');
         }
     };
 
@@ -97,13 +146,28 @@ function ManageStudents() {
     // Handle updating a student
     const handleUpdateStudent = async (e) => {
         e.preventDefault();
+
+        // Input validation
+        if (!validatePhoneNumber(selectedStudent.phone)) {
+            setError('Phone number must be 11 digits.');
+            return;
+        }
+
+        if (!validateEmail(selectedStudent.email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
         try {
             const updatedData = await updateStudent(selectedStudent.id, { phone: selectedStudent.phone, email: selectedStudent.email }, file);
             setStudents(students.map((r) => (r.id === selectedStudent.id ? updatedData : r)));
             setShowEditModal(false);
             setFile(null);
+            setSuccess('Student updated successfully!');
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.log('Error updating student:', error);
+            setError('Error updating student. Please try again.');
+            console.log('Error.');
         }
     };
 
@@ -121,8 +185,11 @@ function ManageStudents() {
             setStudents(students.filter((r) => r.id !== selectedStudent.id));
             setShowEditModal(false);
             setShowDeleteModal(false);
+            setSuccess('Student deleted successfully!');
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
-            console.log('Error deleting student:', error);
+            setError('Error deleting student. Please try again.');
+            console.log('Error.');
         }
     };
 
@@ -131,6 +198,26 @@ function ManageStudents() {
         setShowDeleteModal(false);
         setSelectedStudent(null);
     };
+
+    // Clear success message after 3 seconds
+    useEffect(() => {
+        if (success) {
+            const timer = setTimeout(() => {
+                setSuccess(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [success]);
+
+    // Clear error message after 5 seconds
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     // Render the edit/delete modal
     const renderEditDeleteModal = () => {
@@ -176,6 +263,12 @@ function ManageStudents() {
 
     return (
         <div className="manage-students">
+            {/* Display Success Message */}
+            {success && <SuccessMessage message={success} />}
+
+            {/* Display Error Message */}
+            {error && <ErrorMessage message={error} />}
+
             {/* Search Form */}
             <form onSubmit={handleSearch} className="search-form">
                 <input
@@ -232,7 +325,7 @@ function ManageStudents() {
                                 type="text"
                                 name="matricNo"
                                 className="search-input"
-                                placeholder="Matric Number"
+                                placeholder="Matric Number (e.g., 22/0345)"
                                 value={newStudent.matricNo}
                                 onChange={handleInputChange}
                                 required
@@ -243,7 +336,7 @@ function ManageStudents() {
                                 type="text"
                                 name="phone"
                                 className="search-input"
-                                placeholder="Phone Number"
+                                placeholder="Phone Number (11 digits)"
                                 value={newStudent.phone}
                                 onChange={handleInputChange}
                                 required

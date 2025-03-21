@@ -8,20 +8,37 @@ import BookRoom from "./pages/BookRoom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
+import Footer from "./components/Footer";
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import VerifyOtpPage from './pages/VerifyOtpPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
 
+  const is404Page = ![
+    "/",
+    "/login",
+    "/register",
+    "/manage-students",
+    "/manage-rooms",
+    "/book-room",
+  ].includes(location.pathname);
+
   return (
     <div>
       {/* Hide the navbar on the login and register pages */}
-      {!isLoginPage && !isRegisterPage && <NavBar />}
+      {!isLoginPage && !isRegisterPage && !is404Page && <NavBar />}
       <main className="main-content">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
+          <Route path="/change-password" element={<ChangePasswordPage />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
@@ -31,31 +48,30 @@ function App() {
             <Route path="/book-room" element={<BookRoom />} />
           </Route>
 
-          <Route path="*" element={<div>404 Not Found</div>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <Footer />
     </div>
   );
 }
 
 export default App;
 
-{/** handle errors on the frontend,
-  set error
-       * auth: oauth,
-       * fix logout,
-       * upload student's picture,
-       * input validation,
-       * change swap logo,
-       * reduce the size of navbar elements on mobile,
-       * remove navbar from 404 page,
-       * welcome, {username},
-       * add a footer,
-       * add a loading spinner,
-       * add a 404 page,
-       * add a logout button,
-       * add a profile page,
-       * add a forgot password page,
-       * add a change password page,
-       * add a delete account page,
+{/**
+       * handle errors on the frontend, ----- DONE
+       * input validation, ------ DONE
+       * make pages modern (thanks deepseek) ------ DONE
+       * fix logout, ------ DONE
+       * upload student's picture, ---- DONE
+       * change swap logo, ----- DONE
+       * reduce the size of navbar elements on mobile, ------ DONE
+       * add a 404 page, --- DONE
+       * remove navbar from 404 page, ------- DONE
+       * add a footer, ------ DONE
+       * add a loading spinner, -------- DONE
+       * forgotPassword? ------ DONE
+       *            forgotPassword/verifyEmail/{email},
+       *            forgotPassword/verifyOtp/{otp}/{email},
+       *            changePassword/{email}/{otpToken}
        */}

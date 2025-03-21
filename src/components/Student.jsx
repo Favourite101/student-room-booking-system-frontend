@@ -25,8 +25,9 @@ function Student({ student, handleEditClick }) {
                     const url = URL.createObjectURL(blob);
                     setImageUrl(url);
                 }
+                // eslint-disable-next-line no-unused-vars
             } catch (error) {
-                console.error('Error fetching image:', error);
+                console.error('Error.');
             }
         };
 

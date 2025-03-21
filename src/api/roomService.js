@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/v1/rooms';
+const BASE_URL = 'https://room-booking-backend-ffbncsabfwf9h8f0.canadacentral-01.azurewebsites.net/api/v1/rooms';
 
 // Fetch all rooms
 export const getRooms = async () => {
@@ -13,8 +13,9 @@ export const getRooms = async () => {
     }
     const data = await response.json();
     return data;
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error('Error fetching rooms:', error);
+    console.error('Error.');
     return [];
   }
 };
@@ -32,8 +33,9 @@ export const getRoomByCode = async (code) => {
     }
     const data = await response.json();
     return data;
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error('Error fetching room by code:', error);
+    console.error('Error.');
     return null;
   }
 };
@@ -55,8 +57,9 @@ export const addRoom = async (roomData) => {
     }
 
     return await response.json();
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error('Error adding room:', error);
+    console.error('Error.');
     return null;
   }
 };
@@ -76,8 +79,9 @@ export const deleteRoom = async (id) => {
     }
 
     return { success: true };
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error('Error deleting room:', error);
+    console.error('Error.');
     return null;
   }
 };

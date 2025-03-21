@@ -1,0 +1,37 @@
+/* Message Styles */
+.message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    z-index: 1001; /* Higher than modal z-index */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out; /* Optional: Add fade-in animation */
+}
+
+.success-message {
+    background-color: #e8f5e9; /* Light green background */
+    color: #2e7d32; /* Dark green text */
+    border: 1px solid #a5d6a7; /* Light green border */
+}
+
+.error-message {
+    background-color: #ffebee; /* Light red background */
+    color: #c62828; /* Dark red text */
+    border: 1px solid #ef9a9a; /* Light red border */
+}
+
+/* Optional: Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}

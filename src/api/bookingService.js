@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/v1/bookings';
+const BASE_URL = 'https://room-booking-backend-ffbncsabfwf9h8f0.canadacentral-01.azurewebsites.net/api/v1/bookings';
 
 // Process a room booking
 export const processBooking = async (bookingRequest) => {
@@ -18,7 +18,7 @@ export const processBooking = async (bookingRequest) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Error processing booking:', error);
+    console.error('Error processing booking.');
     throw error;
   }
 };
@@ -37,7 +37,7 @@ export const getDailyBookings = async (date) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching daily bookings:', error);
+    console.error('Error fetching daily bookings.');
     throw error;
   }
 };

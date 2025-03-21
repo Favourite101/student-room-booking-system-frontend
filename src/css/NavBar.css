@@ -1,64 +1,146 @@
+/* NavBar Styles */
 .navbar {
-    background-color: #171917;
-    padding: 2rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
+  background: rgba(26, 26, 26, 0.8); /* Semi-transparent background */
+  padding: 2rem 2rem; /* Increased padding to make navbar taller */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
+  backdrop-filter: blur(10px); /* Blur effect for modern glassmorphism */
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure it stays above other content */
+  height: 80px; /* Fixed height for consistency */
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-name {
+  color: #0ca06f;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-name:hover {
+  color: #6eb44c;
+}
+
+.brand-logo {
+  height: 40px; /* Adjust logo size */
+  width: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Optional: Add rounded corners */
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 1.2rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: #0ca06f;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  color: #6eb44c;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem; /* Space between icon and text */
+}
+
+.nav-text {
+  font-size: 0.8rem; /* Smaller text for descriptions */
+  color: rgba(255, 255, 255, 0.8); /* Slightly transparent text */
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  color: #ff4d4d; /* Red color for logout */
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column; /* Stack icon and text vertically */
+  align-items: center;
+}
+
+.logout-button:hover {
+  color: #ff6666;
+  background-color: rgba(255, 77, 77, 0.1);
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .navbar {
+      padding: 1.5rem;
   }
 
   .brand-name {
-    color: #0ca06f;
-    font-size: 2rem;
-  }
-
-  .brand-name:hover {
-    color: #6eb44c;
-  }
-  
-  .navbar-links {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    font-size: 20px;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    color: #0ca06f;
-    transition: background-color 0.2s;
-  }
-  
-  .nav-link:hover {
-    color: #6eb44c;
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  @media (max-width: 768px) {
-    .navbar {
-      padding: 1rem;
-    }
-  
-    .navbar-brand {
       font-size: 1.2rem;
-    }
-  
-    .navbar-links {
-      gap: 1rem;
-    }
-  
-    .nav-link {
-      padding: 0.5rem;
-    }
   }
 
-  @media (max-width: 639px) {
-    .nav-link {
-      font-size: 15px;
-    }
+  .brand-logo {
+      height: 35px; /* Adjust logo size for smaller screens */
   }
+
+  .navbar-links {
+      gap: 1rem;
+  }
+
+  .nav-link {
+      font-size: 1rem;
+  }
+
+  .nav-icon {
+      font-size: 1.2rem;
+  }
+
+  .nav-text {
+      font-size: 0.7rem; /* Smaller text for mobile */
+  }
+}
+
+@media (max-width: 639px) {
+  .brand-name span {
+      display: none; /* Hide text on very small screens */
+  }
+
+  .brand-logo {
+      height: 30px; /* Adjust logo size for very small screens */
+  }
+
+  .nav-link {
+      font-size: 0.9rem;
+  }
+
+  .nav-icon {
+      font-size: 1rem;
+  }
+
+  .nav-text {
+      font-size: 0.6rem; /* Smaller text for very small screens */
+  }
+}

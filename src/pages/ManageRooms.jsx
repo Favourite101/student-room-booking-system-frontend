@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getRooms, getRoomByCode, addRoom, deleteRoom } from '../api/roomService';
 import Room from '../components/Room';
+import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
+import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
 import '../css/ManageRooms.css';
 import { Link } from 'react-router-dom';
 
@@ -12,8 +14,10 @@ function ManageRooms() {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [newRoom, setNewRoom] = useState({
     roomNo: '',
-    roomType: '',
+    roomType: '', // Default to empty
   });
+  const [success, setSuccess] = useState(null); // State for success message
+  const [error, setError] = useState(null); // State for error message
 
   // Fetch rooms on component mount
   useEffect(() => {
@@ -21,8 +25,9 @@ function ManageRooms() {
       try {
         const data = await getRooms();
         setRooms(data);
+        // eslint-disable-next-line no-unused-vars
       } catch (error) {
-        console.log('Error fetching rooms:', error);
+        console.log('Error.');
       }
     };
     fetchRooms();
@@ -36,10 +41,12 @@ function ManageRooms() {
       if (data) {
         setRooms(data);
       } else {
-        console.log('No room found!');
+        setError('No room found!');
       }
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log('Search failed:', error);
+      setError('Search failed. Please try again.');
+      console.log('Error.');
     }
   };
 
@@ -48,20 +55,37 @@ function ManageRooms() {
     setNewRoom({ ...newRoom, [e.target.name]: e.target.value });
   };
 
+  // Validate room number format (e.g., E21, F09)
+  const validateRoomNumber = (roomNo) => {
+    const regex = /^[A-Za-z]\d{2}$/; // Letter followed by two digits
+    return regex.test(roomNo);
+  };
+
   // Handle adding a new room
   const handleAddRoom = async (e) => {
     e.preventDefault();
+
+    // Validate room number format
+    if (!validateRoomNumber(newRoom.roomNo)) {
+      setError('Room number must be a letter followed by two numbers (e.g., E21, F09).');
+      return;
+    }
+
     try {
       const data = await addRoom(newRoom);
       if (data) {
         setRooms([...rooms, data]);
         setShowAddModal(false);
-        setNewRoom({ roomCode: '' });
+        setNewRoom({ roomNo: '', roomType: '' }); // Reset form
+        setError('');
+        setSuccess('Room added successfully!');
       } else {
-        console.log('Failed to add room.');
+        setError('Failed to add room. Please try again.');
       }
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log('Error adding room:', error);
+      setError('Error adding room. Please try again.');
+      console.log('Error.');
     }
   };
 
@@ -78,8 +102,12 @@ function ManageRooms() {
       await deleteRoom(selectedRoom.id);
       setRooms(rooms.filter((b) => b.id !== selectedRoom.id));
       setShowDeleteModal(false);
+      setError('');
+      setSuccess('Room deleted successfully!');
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log('Error deleting room:', error);
+      setError('Error deleting room. Please try again.');
+      console.log('Error.');
     }
   };
 
@@ -89,8 +117,34 @@ function ManageRooms() {
     setSelectedRoom(null);
   };
 
+  // Clear success message after 3 seconds
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
+
+  // Clear error message after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   return (
     <div className="manage-rooms">
+      {/* Display Success Message */}
+      {success && <SuccessMessage message={success} />}
+
+      {/* Display Error Message */}
+      {error && <ErrorMessage message={error} />}
+
       {/* Search Form */}
       <form onSubmit={handleSearch} className="search-form">
         <input
@@ -136,20 +190,23 @@ function ManageRooms() {
                 type="text"
                 name="roomNo"
                 className="search-input"
-                placeholder="Room Number"
+                placeholder="Room Number (e.g., E21, F09)"
                 value={newRoom.roomNo}
                 onChange={handleInputChange}
                 required
               />
-              <input
-                type="text"
+              <select
                 name="roomType"
                 className="search-input"
-                placeholder="Room Type"
                 value={newRoom.roomType}
                 onChange={handleInputChange}
                 required
-              />
+              >
+                <option value="" disabled>Select Room Type</option>
+                <option value="Classic">Classic</option>
+                <option value="Premium">Premium</option>
+                <option value="Regular">Regular</option>
+              </select>
               <br />
               <br />
               <button type="submit">Add Room</button>
@@ -166,7 +223,7 @@ function ManageRooms() {
         <div className="modal-overlay">
           <div className="edit-delete-modal-content">
             <h2>Are you sure?</h2>
-            <p>Do you want to delete the room with code: <strong>{selectedRoom.roomCode}</strong>?</p>
+            <p>Do you want to delete room: <strong>{selectedRoom.roomNo}</strong>?</p>
             <br />
             <button onClick={handleConfirmDelete} className="delete">
               Yes, Delete

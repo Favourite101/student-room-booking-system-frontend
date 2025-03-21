@@ -27,8 +27,9 @@ const ProtectedRoute = () => {
                 if (expirationTime - currentTime < 30 * 1000) {
                     await refToken();
                 }
+                // eslint-disable-next-line no-unused-vars
             } catch (error) {
-                console.error("Error checking token expiration:", error);
+                console.error("Error.");
                 setIsSessionExpired(true);
             }
         };
