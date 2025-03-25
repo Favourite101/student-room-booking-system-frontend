@@ -138,6 +138,9 @@ function Register() {
                     Register
                 </button>
             </form>
+            <a href="/login" className="login-link">
+                Already have an account? Login here!
+            </a>
 
             {/* Display Success Message */}
             {success && <SuccessMessage message={success} />}
