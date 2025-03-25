@@ -13,6 +13,7 @@ import Footer from "./components/Footer";
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VerifyOtpPage from './pages/VerifyOtpPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
+import NetworkStatusBanner from './components/NetworkStatusBanner';
 
 function App() {
   const location = useLocation();
@@ -29,30 +30,33 @@ function App() {
   ].includes(location.pathname);
 
   return (
-    <div>
-      {/* Hide the navbar on the login and register pages */}
-      {!isLoginPage && !isRegisterPage && !is404Page && <NavBar />}
-      <main className="main-content">
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/verify-otp" element={<VerifyOtpPage />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
+    <>
+      <NetworkStatusBanner />
+      <div>
+        {/* Hide the navbar on the login and register pages */}
+        {!isLoginPage && !isRegisterPage && !is404Page && <NavBar />}
+        <main className="main-content">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/verify-otp" element={<VerifyOtpPage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
 
-          {/* Protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/manage-students" element={<ManageStudents />} />
-            <Route path="/manage-rooms" element={<ManageRooms />} />
-            <Route path="/book-room" element={<BookRoom />} />
-          </Route>
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/manage-students" element={<ManageStudents />} />
+              <Route path="/manage-rooms" element={<ManageRooms />} />
+              <Route path="/book-room" element={<BookRoom />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+      </>
   );
 }
 

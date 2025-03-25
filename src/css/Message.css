@@ -1,37 +1,70 @@
-/* Message Styles */
+body {
+    overflow-x: hidden;
+}
+
 .message {
     position: fixed;
     top: 20px;
     left: 50%;
-    transform: translateX(-50%);
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     border-radius: 8px;
-    text-align: center;
-    z-index: 1001; /* Higher than modal z-index */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 0.3s ease-in-out; /* Optional: Add fade-in animation */
+    z-index: 1001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 90%;
+    backdrop-filter: blur(10px);
 }
 
 .success-message {
-    background-color: #e8f5e9; /* Light green background */
-    color: #2e7d32; /* Dark green text */
-    border: 1px solid #a5d6a7; /* Light green border */
+    background-color: rgba(46, 125, 50, 0.9);
+    color: white;
+    border: 1px solid rgba(165, 214, 167, 0.3);
 }
 
 .error-message {
-    background-color: #ffebee; /* Light red background */
-    color: #c62828; /* Dark red text */
-    border: 1px solid #ef9a9a; /* Light red border */
+    background-color: rgba(198, 40, 40, 0.9);
+    color: white;
+    border: 1px solid rgba(239, 154, 154, 0.3);
 }
 
-/* Optional: Fade-in animation */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -20px);
+.message-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.message p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .message {
+        padding: 0.75rem 1rem;
+        width: 90%;
+        max-width: 400px;
     }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
+    
+    .message p {
+        font-size: 0.9rem;
     }
+}
+
+/* Animation for auto-dismissing messages */
+@keyframes progress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.message::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+    animation: progress 5s linear forwards;
 }

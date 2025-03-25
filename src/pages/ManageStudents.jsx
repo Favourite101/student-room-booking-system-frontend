@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { getStudents, getStudentByName, createStudent, updateStudent, deleteStudent } from '../api/studentService';
 import Student from '../components/Student';
 import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
 import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
 import '../css/ManageStudents.css';
-import { Link } from 'react-router-dom';
+import { FaArrowUp, FaPlus } from 'react-icons/fa';
 
 function ManageStudents() {
     const [students, setStudents] = useState([]);
@@ -13,7 +14,6 @@ function ManageStudents() {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
-    const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
     const [newStudent, setNewStudent] = useState({
         name: '',
         matricNo: '',
@@ -24,6 +24,29 @@ function ManageStudents() {
     const [file, setFile] = useState(null);
     const [success, setSuccess] = useState(null); // State for success message
     const [error, setError] = useState(null); // State for error message
+    const [showScrollButton, setShowScrollButton] = useState(false);
+    const topRef = useRef(null);
+
+    // Check scroll position for scroll-to-top button
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.pageYOffset > 300) {
+                setShowScrollButton(true);
+            } else {
+                setShowScrollButton(false);
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Scroll to top function
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
 
     // Fetch students on component mount
     useEffect(() => {
@@ -128,12 +151,7 @@ function ManageStudents() {
     };
 
     // Handle edit button click
-    const handleEditClick = (student, event) => {
-        const buttonRect = event.target.getBoundingClientRect();
-        setModalPosition({
-            top: buttonRect.bottom + window.scrollY + 8,
-            left: buttonRect.left + window.scrollX,
-        });
+    const handleEditClick = (student) => {
         setSelectedStudent(student);
         setShowEditModal(true);
     };
@@ -222,52 +240,115 @@ function ManageStudents() {
     // Render the edit/delete modal
     const renderEditDeleteModal = () => {
         if (!showEditModal || !selectedStudent) return null;
-
+    
         return (
-            <div
-                className="edit-delete-modal"
-                style={{
-                    position: 'absolute',
-                    top: modalPosition.top,
-                    left: modalPosition.left,
-                }}
-            >
-                <button onClick={() => setShowEditModal(false)} className="close">
-                    ×
-                </button>
-                <form onSubmit={handleUpdateStudent}>
-                    <label>Phone Number</label>
-                    <input
-                        type="text"
-                        name="phone"
-                        value={selectedStudent.phone}
-                        onChange={handlePhoneChange}
-                        required
-                    />
-                    <label>Email</label>
-                    <input
-                        type="text"
-                        name="email"
-                        value={selectedStudent.email}
-                        onChange={handlePhoneChange}
-                        required
-                    />
-                    <button type="submit">Update</button>
-                </form>
-                <button onClick={() => handleDeleteClick(selectedStudent)} className="delete">
-                    Delete Student
-                </button>
+            <div className="modal-overlay">
+                <motion.div 
+                    className="edit-modal-content"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                >
+                    <div className="modal-header">
+                        <h3>Edit Student</h3>
+                        <button 
+                            onClick={() => setShowEditModal(false)} 
+                            className="modal-close"
+                        >
+                            ×
+                        </button>
+                    </div>
+                    
+                    <form onSubmit={handleUpdateStudent} className="modal-form">
+                        <div className="form-group">
+                            <label>Name</label>
+                            <input
+                                type="text"
+                                value={selectedStudent.name}
+                                disabled
+                                className="disabled-input"
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Matric Number</label>
+                            <input
+                                type="text"
+                                value={selectedStudent.matricNo}
+                                disabled
+                                className="disabled-input"
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Phone Number</label>
+                            <input
+                                type="text"
+                                name="phone"
+                                value={selectedStudent.phone}
+                                onChange={handlePhoneChange}
+                                required
+                                placeholder="11 digit phone number"
+                            />
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={selectedStudent.email}
+                                onChange={handlePhoneChange}
+                                required
+                                placeholder="Valid email address"
+                            />
+                        </div>
+                        
+                        <div className="modal-actions">
+                            <button type="submit" className="update-button">
+                                Save Changes
+                            </button>
+                            <button 
+                                type="button" 
+                                onClick={() => handleDeleteClick(selectedStudent)} 
+                                className="edit-delete-button"
+                            >
+                                Delete Student
+                            </button>
+                        </div>
+                    </form>
+                </motion.div>
             </div>
         );
     };
 
     return (
-        <div className="manage-students">
-            {/* Display Success Message */}
+        <div className="manage-students" ref={topRef}>
+            {/* Messages */}
             {success && <SuccessMessage message={success} />}
-
-            {/* Display Error Message */}
             {error && <ErrorMessage message={error} />}
+
+            {/* Floating Add Button */}
+            <button 
+                className="floating-add-button"
+                onClick={() => setShowAddModal(true)}
+                aria-label="Add new student"
+            >
+                <FaPlus className="add-icon" />
+                <span className="add-text">Add Student</span>
+            </button>
+
+            {/* Scroll to Top Button */}
+            {showScrollButton && (
+                <button 
+                    className="scroll-to-top"
+                    onClick={scrollToTop}
+                    aria-label="Scroll to top"
+                >
+                    <FaArrowUp />
+                </button>
+            )}
 
             {/* Search Form */}
             <form onSubmit={handleSearch} className="search-form">
@@ -282,6 +363,7 @@ function ManageStudents() {
                     Search
                 </button>
             </form>
+            <br /><br />
 
             {/* Students Grid */}
             <div className="students-grid">
@@ -294,13 +376,16 @@ function ManageStudents() {
                         />
                     ))
                 ) : (
-                    <p className="no-students">No students found...</p>
+                    <div className="no-students-container">
+                        <p className="no-students">No students found...</p>
+                        <button 
+                            className="add-student-empty"
+                            onClick={() => setShowAddModal(true)}
+                        >
+                            Add New Student
+                        </button>
+                    </div>
                 )}
-
-                {/* Add Student Button */}
-                <Link onClick={() => setShowAddModal(true)} className="add-student">
-                    +
-                </Link>
             </div>
 
             {/* Add Student Modal */}

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { processBooking, getDailyBookings } from '../api/bookingService';
 import { getStudentByName } from '../api/studentService';
 import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
 import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
 import '../css/BookRoom.css';
+import { FaCalendarAlt, FaExchangeAlt } from 'react-icons/fa';
 
 function BookRoom() {
     const [bookingRequest, setBookingRequest] = useState({
@@ -19,6 +21,33 @@ function BookRoom() {
     const [hasFetched, setHasFetched] = useState(false);
     const [success, setSuccess] = useState(null); // State for success message
     const [error, setError] = useState(null); // State for error message
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            if (studentSearch.length < 2) {
+                setStudents([]);
+                setShowDropdown(false);
+                return;
+            }
+            
+            try {
+                setIsLoading(true);
+                const data = await getStudentByName(studentSearch);
+                setStudents(data || []);
+                setShowDropdown(data && data.length > 0);
+            } catch (error) {
+                console.error('Error fetching students:', error);
+                setStudents([]);
+                setShowDropdown(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const debounceTimer = setTimeout(fetchStudents, 300);
+        return () => clearTimeout(debounceTimer);
+    }, [studentSearch]);
 
     useEffect(() => {
         // Fetch students by name
@@ -91,6 +120,7 @@ function BookRoom() {
     // Fetch daily bookings
     const fetchDailyBookings = async () => {
         try {
+            setIsLoading(true);
             const bookings = await getDailyBookings(new Date(selectedDate));
             setDailyBookings(bookings);
             setHasFetched(true);
@@ -98,6 +128,8 @@ function BookRoom() {
         } catch (error) {
             setError("Failed to fetch daily bookings.");
             console.error("Error.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -122,87 +154,155 @@ function BookRoom() {
     }, [error]);
 
     return (
-        <div className="booking-room">
-            <h2>Book Room</h2>
-            <br />
+        <motion.div 
+            className="booking-room"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+        >
+            <h2 className="page-title">Room Booking System</h2>
 
-            {/* Display Success Message */}
-            {success && <SuccessMessage message={success} />}
-
-            {/* Display Error Message */}
-            {error && <ErrorMessage message={error} />}
+            <AnimatePresence>
+                {success && <SuccessMessage message={success} />}
+                {error && <ErrorMessage message={error} />}
+            </AnimatePresence>
 
             {/* Booking Form */}
-            <form onSubmit={handleBookingSubmit} className="booking-form">
-                <div className="student-search">
-                    <input
-                        list="students"
-                        type="text"
-                        placeholder="Search Student by Name"
-                        value={studentSearch}
-                        onChange={handleStudentSearch}
-                        required
-                    />
-                    {showDropdown && (
-                        <datalist id="students" className="student-dropdown">
-                            {students.map((student) => (
-                                <option key={student.id}>
-                                    {student.name} ({student.matricNo})
-                                </option>
-                            ))}
-                        </datalist>
-                    )}
-                </div>
-                <input
-                    type="text"
-                    name="newRoomNo"
-                    placeholder="New Room Number"
-                    value={bookingRequest.newRoomNo}
-                    onChange={handleInputChange}
-                    required
-                />
-                <input
-                    type="text"
-                    name="paymentCode"
-                    placeholder="Payment Code (min 5 characters)"
-                    value={bookingRequest.paymentCode}
-                    onChange={handleInputChange}
-                    required
-                />
-                <button type="submit">Book Room</button>
-                <p className="note">Note: Ensure the student and room exist</p>
-                <p className="note">and your payment code is unique!</p>
-            </form>
+            <div className="booking-container">
+                <motion.div 
+                    className="booking-card"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <div className="card-header">
+                        <FaExchangeAlt className="header-icon" />
+                        <h3>New Room Booking</h3>
+                    </div>
 
-            {/* Daily Bookings Section */}
-            <div className="daily-bookings">
-                <h2>Daily Bookings</h2>
-                <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                />
-                <button onClick={fetchDailyBookings}>Fetch Bookings</button>
-                <br />
-                <br />
+                    <form onSubmit={handleBookingSubmit} className="booking-form">
+                        <div className="form-group">
+                                <input
+                                    list="students"
+                                    type="text"
+                                    placeholder="Search Student by Name"
+                                    value={studentSearch}
+                                    onChange={handleStudentSearch}
+                                    required
+                                />
+                            {showDropdown && (
+                                <datalist id="students" className="student-dropdown">
+                                    {students.map((student) => (
+                                        <option key={student.id}>
+                                            {student.name} ({student.matricNo})
+                                        </option>
+                                    ))}
+                                </datalist>
+                            )}
+                        </div>
+                        <div className='form-group'>
+                            <input
+                                type="text"
+                                name="newRoomNo"
+                                placeholder="New Room Number"
+                                value={bookingRequest.newRoomNo}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <div className='form-group'>
+                            <input
+                                type="text"
+                                name="paymentCode"
+                                placeholder="Payment Code (min 5 characters)"
+                                value={bookingRequest.paymentCode}
+                                onChange={handleInputChange}
+                                required
+                            />
+                        </div>
+                        <motion.button 
+                            type="submit"
+                            className="submit-button"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            disabled={isLoading}
+                        >
+                            Book Room
+                        </motion.button>
+                        <div className="form-note">
+                            <p>• Ensure the student and room exist.</p>
+                            <p>• Payment code must be unique.</p>
+                        </div>
+                    </form>
+                </motion.div>
 
-                {/* Display daily bookings */}
-                {dailyBookings.length > 0 ? (
-                    <ul>
-                        {dailyBookings.map((booking) => (
-                            <li key={booking.id}>
-                                <p><strong>Student:</strong> {booking.studentName} ({booking.matricNo})</p>
-                                <p><strong>Room:</strong> {booking.roomNo}</p>
-                                <p><strong>Payment Code:</strong> {booking.paymentCode}</p>
-                                <p><strong>Date:</strong> {new Date(booking.date).toLocaleString()}</p>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    hasFetched && <p>No bookings found for this date.</p>
-                )}
+                <motion.div 
+                    className="bookings-card"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <div className="card-header">
+                        <FaCalendarAlt className="header-icon" />
+                        <h3>Daily Bookings</h3>
+                    </div>
+
+                    <div className="date-selector">
+                        <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                        />
+                        <motion.button 
+                            onClick={fetchDailyBookings}
+                            className="fetch-button"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            disabled={isLoading}
+                        >
+                            Fetch Bookings
+                        </motion.button>
+                    </div>
+
+                    <div className="bookings-list">
+                        {dailyBookings.length > 0 ? (
+                            <ul>
+                                {dailyBookings.map((booking) => (
+                                    <motion.li 
+                                        key={booking.id}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    >
+                                        <div className="booking-item">
+                                            <div className="booking-header">
+                                                <span className="student-name">{booking.studentName}</span>
+                                                <span className="matric-no">{booking.matricNo}</span>
+                                            </div>
+                                            <div className="booking-details">
+                                                <p><strong>Room:</strong> {booking.roomNo}</p>
+                                                <p><strong>Payment Code:</strong> {booking.paymentCode}</p>
+                                                <p><strong>Date:</strong> {new Date(booking.date).toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                    </motion.li>
+                                ))}
+                            </ul>
+                        ) : (
+                            hasFetched && (
+                                <motion.div 
+                                    className="no-bookings"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                >
+                                    <p>No bookings found for this date.</p>
+                                </motion.div>
+                            )
+                        )}
+                    </div>
+                </motion.div>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

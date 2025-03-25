@@ -1,10 +1,49 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUsers, FaDoorOpen, FaCalendarAlt, FaBook} from "react-icons/fa"; // Import icons
+import { motion, AnimatePresence } from "framer-motion";
+import { FaUsers, FaDoorOpen, FaCalendarAlt, FaBook } from "react-icons/fa";
+import usePullToRefresh from '../hooks/usePullToRefresh';
 import "../css/Home.css";
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeOut"
+    }
+  }
+};
+
+const statVariants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      type: "spring",
+      stiffness: 100
+    }
+  }
+};
+
 function Home() {
-    // State variables
+    usePullToRefresh();
     const [stats, setStats] = useState({
         totalBookingsToday: 0,
         totalStudents: 0,
@@ -63,69 +102,163 @@ function Home() {
     }, []);
 
     return (
-        <div className="home-page">
+        <motion.div 
+            className="home-page"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            {/* Decorative background elements */}
+            <div className="background-elements">
+                <div className="circle circle-1"></div>
+                <div className="circle circle-2"></div>
+                <div className="circle circle-3"></div>
+            </div>
+
             {/* Welcome Section */}
-            <section className="welcome-section">
-                <h1>Welcome to the Room Booking Management System</h1>
-                <p>Efficiently manage students, rooms, and daily bookings.</p>
-                <p>Note: Only admins can delete students or rooms.</p>
-            </section>
+            <motion.section 
+                className="welcome-section"
+                variants={itemVariants}
+            >
+                <motion.h1
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    Welcome to the Room Booking System
+                </motion.h1>
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    Efficiently manage students, rooms, and daily bookings.
+                </motion.p>
+            </motion.section>
 
             {/* Quick Links Section */}
-            <section className="quick-links-section">
-                <h2>Quick Actions</h2>
+            <motion.section 
+                className="quick-links-section"
+                variants={itemVariants}
+            >
+                <motion.h2 variants={itemVariants}>Quick Actions</motion.h2>
                 <div className="quick-links-grid">
-                    <Link to="/manage-students" className="quick-link">
-                        <FaUsers className="link-icon" />
-                        <h3>Manage Students</h3>
-                        <p>Add, edit, or view student details.</p>
-                    </Link>
-                    <Link to="/manage-rooms" className="quick-link">
-                        <FaDoorOpen className="link-icon" />
-                        <h3>Manage Rooms</h3>
-                        <p>Track and manage rooms.</p>
-                    </Link>
-                    <Link to="/book-room" className="quick-link">
-                        <FaCalendarAlt className="link-icon" />
-                        <h3>Book Room</h3>
-                        <p>Process a new room booking.</p>
-                    </Link>
-                    <Link to="/daily-bookings" className="quick-link">
-                        <FaBook className="link-icon" />
-                        <h3>View Daily Bookings</h3>
-                        <p>Check booking history for any date.</p>
-                    </Link>
+                    {[
+                        { 
+                            icon: <FaUsers />, 
+                            title: "Manage Students", 
+                            desc: "Add, edit, or view students",
+                            path: "/manage-students"
+                        },
+                        { 
+                            icon: <FaDoorOpen />, 
+                            title: "Manage Rooms", 
+                            desc: "Track and manage rooms",
+                            path: "/manage-rooms"
+                        },
+                        { 
+                            icon: <FaCalendarAlt />, 
+                            title: "Book Room", 
+                            desc: "Process a new room booking",
+                            path: "/book-room"
+                        },
+                        { 
+                            icon: <FaBook />, 
+                            title: "View Bookings", 
+                            desc: "Check booking history",
+                            path: "/book-room"
+                        }
+                    ].map((link, index) => (
+                        <motion.div
+                            key={index}
+                            variants={itemVariants}
+                            whileHover={{ y: -5 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <Link to={link.path} className="quick-link">
+                                <div className="link-icon-container">
+                                    {link.icon}
+                                </div>
+                                <div className="link-content">
+                                    <h3>{link.title}</h3>
+                                    <p>{link.desc}</p>
+                                </div>
+                            </Link>
+                        </motion.div>
+                    ))}
                 </div>
-            </section>
+            </motion.section>
 
             {/* Statistics Dashboard */}
-            <section className="statistics-section">
-                <h2>System Statistics</h2>
+            <motion.section 
+                className="statistics-section"
+                variants={itemVariants}
+            >
+                <motion.h2 variants={itemVariants}>System Statistics</motion.h2>
                 {loading ? (
-                    <div className="spinner"></div>
+                    <div className="spinner-container">
+                        <div className="spinner"></div>
+                    </div>
                 ) : error ? (
-                    <p className="error-message">Error: {error}</p>
+                    <motion.p 
+                        className="error-message"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                    >
+                        {error}
+                    </motion.p>
                 ) : (
                     <div className="stats-grid">
-                        <div className="stat-card">
-                            <FaCalendarAlt className="stat-icon" />
-                            <h3>Bookings Today</h3>
-                            <p>{stats.totalBookingsToday}</p>
-                        </div>
-                        <div className="stat-card">
-                            <FaUsers className="stat-icon" />
-                            <h3>Total Students</h3>
-                            <p>{stats.totalStudents}</p>
-                        </div>
-                        <div className="stat-card">
-                            <FaDoorOpen className="stat-icon" />
-                            <h3>Total Rooms</h3>
-                            <p>{stats.totalRooms}</p>
-                        </div>
+                        {[
+                            { 
+                                icon: <FaCalendarAlt />, 
+                                title: "Bookings Today", 
+                                value: stats.totalBookingsToday,
+                                color: "#6eb44c"
+                            },
+                            { 
+                                icon: <FaUsers />, 
+                                title: "Total Students", 
+                                value: stats.totalStudents,
+                                color: "#4285F4"
+                            },
+                            { 
+                                icon: <FaDoorOpen />, 
+                                title: "Total Rooms", 
+                                value: stats.totalRooms,
+                                color: "#EA4335"
+                            } 
+                        ].map((stat, index) => (
+                            <motion.div 
+                                key={index}
+                                className="stat-card"
+                                variants={statVariants}
+                                whileHover={{ scale: 1.03 }}
+                            >
+                                <div 
+                                    className="stat-icon-container"
+                                    style={{ backgroundColor: `${stat.color}20` }}
+                                >
+                                    {stat.icon}
+                                </div>
+                                <h3>{stat.title}</h3>
+                                <AnimatePresence mode="wait">
+                                    <motion.p
+                                        key={stat.value}
+                                        initial={{ scale: 0.8, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0.8, opacity: 0 }}
+                                        style={{ color: stat.color }}
+                                    >
+                                        {stat.value}
+                                    </motion.p>
+                                </AnimatePresence>
+                            </motion.div>
+                        ))}
                     </div>
                 )}
-            </section>
-        </div>
+            </motion.section>
+        </motion.div>
     );
 }
 

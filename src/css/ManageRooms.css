@@ -5,49 +5,73 @@
   box-sizing: border-box;
 }
 
+/* Enhanced Search */
+.search-container {
+  padding: 1rem;
+  background: #2a2a2a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 .search-form {
-  max-width: 600px;
-  margin: 0 auto 2rem;
   display: flex;
-  gap: 1rem;
-  padding: 0 1rem;
-  box-sizing: border-box;
+  gap: 0.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-input-container {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  color: #999;
 }
 
 .search-input {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 4px;
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #444;
+  border-radius: 8px;
   background-color: #333;
   color: white;
   font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 .search-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #666;
+  border-color: #6eb44c;
+  box-shadow: 0 0 0 2px rgba(110, 180, 76, 0.3);
 }
 
 .search-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #086647;
+  padding: 0 1.5rem;
+  background-color: #6eb44c;
   color: white;
-  border-radius: 4px;
+  border: none;
+  border-radius: 8px;
   font-weight: 500;
-  transition: background-color 0.2s;
+  cursor: pointer;
+  transition: all 0.3s ease;
   white-space: nowrap;
 }
 
 .search-button:hover {
-  background-color: #6eb44c;
+  background-color: #5da03a;
 }
 
 /* ManageRooms.css */
 .rooms-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 220px));
-  gap: 1rem;
+  gap: 4rem;
   width: 100%;
   box-sizing: border-box;
   justify-content: left;
@@ -236,5 +260,129 @@
 
   .rooms-grid {
     justify-content: center !important;
+  }
+}
+
+/* Floating Add Button */
+.floating-add-button {
+  position: fixed;
+  bottom: 5rem;
+  right: 2rem;
+  background-color: #6eb44c;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.floating-add-button:hover {
+  background-color: #5da03a;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.floating-add-button .add-icon {
+  font-size: 1.2rem;
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 10rem;
+  right: 2rem;
+  width: 50px;
+  height: 50px;
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.scroll-to-top:hover {
+  background-color: #357abd;
+  transform: translateY(-3px);
+}
+
+/* No Students Container */
+.no-students-container {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.add-student-empty {
+  padding: 0.75rem 1.5rem;
+  background-color: #6eb44c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.add-student-empty:hover {
+  background-color: #5da03a;
+}
+
+/* Remove the old add-student styles */
+.add-student {
+  display: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .floating-add-button {
+      bottom: 1.5rem;
+      right: 1.5rem;
+      padding: 0.75rem 1.25rem;
+  }
+  
+  .scroll-to-top {
+      bottom: 4.5rem;
+      right: 1.5rem;
+      width: 45px;
+      height: 45px;
+  }
+  
+  .floating-add-button .add-text {
+      display: none;
+  }
+  
+  .floating-add-button .add-icon {
+      font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-add-button {
+      bottom: 1rem;
+      right: 1rem;
+  }
+  
+  .scroll-to-top {
+      bottom: 4rem;
+      right: 1rem;
   }
 }

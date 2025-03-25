@@ -1,157 +1,257 @@
-.login-container {
+/* Base styles */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  position: relative;
+  overflow: hidden;
   padding: 2rem;
-  width: 90%;
-  max-width: 400px;
-  margin: 2rem auto;
-  box-sizing: border-box;
-  background-color: #1a1a1a;
-  border-radius: 12px;
+}
+
+/* Decorative elements */
+.login-decoration {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(110, 180, 76, 0.1);
+}
+
+.circle-1 {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  left: -100px;
+}
+
+.circle-2 {
+  width: 200px;
+  height: 200px;
+  bottom: -50px;
+  right: -50px;
+  background: rgba(8, 102, 71, 0.1);
+}
+
+.circle-3 {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  right: 10%;
+  background: rgba(66, 133, 244, 0.1);
+}
+
+/* Container */
+.login-container {
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  background-color: rgba(26, 26, 26, 0.9);
+  border-radius: 16px;
   color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .login-title {
-  text-align: center;
   font-size: 1.75rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.5rem;
   color: white;
+  font-weight: 600;
 }
 
+.login-subtitle {
+  color: #a0a0a0;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+}
+
+/* Form */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.9rem;
+  color: #d0d0d0;
 }
 
 .login-input {
-  padding: 0.75rem 1rem;
+  padding: 0.85rem 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: #333;
   color: white;
   font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 .login-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #666;
+  box-shadow: 0 0 0 2px #6eb44c;
+  background-color: #3a3a3a;
 }
 
+.login-input::placeholder {
+  color: #888;
+}
+
+/* Button */
 .login-button {
-  padding: 0.75rem;
-  background-color: #086647;
+  padding: 0.85rem;
+  background-color: #6eb44c;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   width: 100%;
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .login-button:hover {
-  background-color: #6eb44c;
+  background-color: #5da03a;
 }
 
-.login-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 1.25rem 0;
-  color: #666;
-  font-size: 0.9rem;
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
 }
 
-.login-divider::before,
-.login-divider::after {
-  content: "";
-  flex: 1;
-  border-bottom: 1px solid #666;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-.login-divider::before {
-  margin-right: 0.75rem;
-}
-
-.login-divider::after {
-  margin-left: 0.75rem;
-}
-
-.google-login-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background-color: #4285F4;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  width: 100%;
-}
-
-.google-login-button:hover {
-  background-color: #357abd;
-}
-
-.google-logo {
-  width: 18px;
-  height: 18px;
-}
-
+/* Links */
 .login-links {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
   margin-top: 1rem;
-  font-size: 0.875rem;
 }
 
 .login-link {
   text-decoration: none;
   color: #a0a0a0;
+  font-size: 0.9rem;
   transition: color 0.2s;
 }
 
 .login-link:hover {
   color: #6eb44c;
-  text-decoration: underline;
 }
 
-/* Mobile-specific styles */
+.login-link span {
+  color: #6eb44c;
+  font-weight: 500;
+}
+
+/* Social login */
+.social-login {
+  margin-top: 2rem;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  color: #666;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #444;
+}
+
+.divider span {
+  padding: 0 1rem;
+  font-size: 0.85rem;
+}
+
+/* Mobile styles */
+
 @media (max-width: 480px) {
+  .login-page {
+    padding: 1rem;
+    background: #1a1a1a; /* Solid color for performance */
+  }
+
   .login-container {
     padding: 1.5rem;
-    width: 95%;
-    margin: 1rem auto;
-    border-radius: 10px;
+    border-radius: 12px;
+    width: 100%;
+    margin: 0 auto;
   }
 
-  .login-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+  .login-logo {
+    width: 72px; /* Larger for mobile visibility */
+    height: 72px;
   }
 
-  .login-input,
-  .login-button,
-  .google-login-button {
-    padding: 0.65rem;
-    font-size: 0.9rem;
+  .login-input {
+    font-size: 16px; /* Prevent iOS zoom */
+    padding: 1rem;
   }
 
-  .login-divider {
-    margin: 1rem 0;
-    font-size: 0.8rem;
+  /* Mobile-specific keyboard handling */
+  .login-input[type="password"] {
+    letter-spacing: 0.125rem;
   }
 
-  .login-links {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: center;
+  /* Bottom-aligned actions */
+  .mobile-action-group {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #2a2a2a;
+    padding: 1rem;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
   }
 }

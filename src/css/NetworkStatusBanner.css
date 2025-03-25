@@ -1,0 +1,20 @@
+.network-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    text-align: center;
+    z-index: 1000;
+    font-weight: 500;
+  }
+  
+  .network-banner.offline {
+    background-color: #ff6b6b;
+    color: white;
+  }
+  
+  .network-banner.online {
+    background-color: #6eb44c;
+    color: white;
+  }

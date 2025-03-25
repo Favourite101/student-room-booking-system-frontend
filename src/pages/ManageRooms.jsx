@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getRooms, getRoomByCode, addRoom, deleteRoom } from '../api/roomService';
 import Room from '../components/Room';
 import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
 import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
 import '../css/ManageRooms.css';
-import { Link } from 'react-router-dom';
+import { FaArrowUp, FaPlus } from 'react-icons/fa';
 
 function ManageRooms() {
   const [rooms, setRooms] = useState([]);
@@ -18,6 +18,29 @@ function ManageRooms() {
   });
   const [success, setSuccess] = useState(null); // State for success message
   const [error, setError] = useState(null); // State for error message
+  const [showScrollButton, setShowScrollButton] = useState(false);
+      const topRef = useRef(null);
+
+  // Check scroll position for scroll-to-top button
+  useEffect(() => {
+    const handleScroll = () => {
+        if (window.pageYOffset > 100) {
+            setShowScrollButton(true);
+        } else {
+            setShowScrollButton(false);
+        }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+      window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+      });
+  };
 
   // Fetch rooms on component mount
   useEffect(() => {
@@ -138,12 +161,33 @@ function ManageRooms() {
   }, [error]);
 
   return (
-    <div className="manage-rooms">
+    <div className="manage-rooms" ref={topRef}>
       {/* Display Success Message */}
       {success && <SuccessMessage message={success} />}
 
       {/* Display Error Message */}
       {error && <ErrorMessage message={error} />}
+
+      {/* Floating Add Button */}
+                  <button 
+                      className="floating-add-button"
+                      onClick={() => setShowAddModal(true)}
+                      aria-label="Add new room"
+                  >
+                      <FaPlus className="add-icon" />
+                      <span className="add-text">Add Room</span>
+                  </button>
+      
+                  {/* Scroll to Top Button */}
+                  {showScrollButton && (
+                      <button 
+                          className="scroll-to-top"
+                          onClick={scrollToTop}
+                          aria-label="Scroll to top"
+                      >
+                          <FaArrowUp />
+                      </button>
+                  )}
 
       {/* Search Form */}
       <form onSubmit={handleSearch} className="search-form">
@@ -158,6 +202,7 @@ function ManageRooms() {
           Search
         </button>
       </form>
+      <br /><br />
 
       {/* Rooms Grid */}
       <div className="rooms-grid">
@@ -172,11 +217,6 @@ function ManageRooms() {
         ) : (
           <p className="no-rooms">No rooms found...</p>
         )}
-
-        {/* Add Room Button */}
-        <Link onClick={() => setShowAddModal(true)} className="add-room">
-          +
-        </Link>
       </div>
 
       {/* Add Room Modal */}

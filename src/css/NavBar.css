@@ -1,146 +1,193 @@
-/* NavBar Styles */
 .navbar {
-  background: rgba(26, 26, 26, 0.8); /* Semi-transparent background */
-  padding: 2rem 2rem; /* Increased padding to make navbar taller */
+  background: rgba(26, 26, 26, 0.8);
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
-  backdrop-filter: blur(10px); /* Blur effect for modern glassmorphism */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
   position: sticky;
   top: 0;
-  z-index: 1000; /* Ensure it stays above other content */
-  height: 80px; /* Fixed height for consistency */
+  z-index: 1000;
+  height: 70px;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+  background: rgba(18, 18, 18, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  height: 60px;
+  padding: 1rem 2rem;
 }
 
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .brand-name {
-  color: #0ca06f;
-  font-size: 1.5rem;
-  font-weight: bold;
+  color: #6eb44c;
+  font-size: 1.4rem;
+  font-weight: 600;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .brand-name:hover {
-  color: #6eb44c;
+  color: #8bc34a;
+  transform: scale(1.02);
 }
 
 .brand-logo {
-  height: 40px; /* Adjust logo size */
-  width: auto; /* Maintain aspect ratio */
-  border-radius: 8px; /* Optional: Add rounded corners */
+  height: 36px;
+  width: auto;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled .brand-logo {
+  height: 32px;
 }
 
 .navbar-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   align-items: center;
 }
 
 .nav-link {
-  font-size: 1.2rem;
-  padding: 0.5rem;
-  border-radius: 8px;
-  color: #0ca06f;
-  transition: all 0.2s ease;
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
   display: flex;
-  flex-direction: column; /* Stack icon and text vertically */
+  flex-direction: column;
   align-items: center;
   text-decoration: none;
-}
+} 
 
 .nav-link:hover {
   color: #6eb44c;
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px); /* Slight lift on hover */
+  background-color: rgba(110, 180, 76, 0.1);
+  transform: translateY(-2px);
+}
+
+.nav-link.active {
+  color: #6eb44c;
+  background-color: rgba(110, 180, 76, 0.2);
 }
 
 .nav-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem; /* Space between icon and text */
+  font-size: 1.3rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.3s ease;
 }
 
 .nav-text {
-  font-size: 0.8rem; /* Smaller text for descriptions */
-  color: rgba(255, 255, 255, 0.8); /* Slightly transparent text */
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
 }
 
 .logout-button {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  color: #ff4d4d; /* Red color for logout */
-  transition: all 0.2s ease;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: rgba(255, 107, 107, 0.9);
+  transition: all 0.3s ease;
   display: flex;
-  flex-direction: column; /* Stack icon and text vertically */
+  flex-direction: column;
   align-items: center;
 }
 
 .logout-button:hover {
-  color: #ff6666;
-  background-color: rgba(255, 77, 77, 0.1);
-  transform: translateY(-2px); /* Slight lift on hover */
+  color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+  transform: translateY(-2px);
 }
 
 /* Responsive Styles */
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .navbar {
-      padding: 1.5rem;
+      padding: 1.25rem;
   }
-
-  .brand-name {
-      font-size: 1.2rem;
-  }
-
-  .brand-logo {
-      height: 35px; /* Adjust logo size for smaller screens */
-  }
-
+  
   .navbar-links {
       gap: 1rem;
   }
+}
 
-  .nav-link {
-      font-size: 1rem;
+@media (max-width: 768px) {
+  .navbar {
+      padding: 1rem;
+      height: 65px;
   }
-
-  .nav-icon {
+  
+  .navbar.scrolled {
+      height: 55px;
+  }
+  
+  .brand-name {
       font-size: 1.2rem;
+      gap: 0.5rem;
   }
-
+  
+  .brand-logo {
+      height: 32px;
+  }
+  
+  .navbar.scrolled .brand-logo {
+      height: 28px;
+  }
+  
+  .navbar-links {
+      gap: 0.75rem;
+  }
+  
+  .nav-link {
+      padding: 0.5rem;
+  }
+  
+  .nav-icon {
+      font-size: 1.1rem;
+  }
+  
   .nav-text {
-      font-size: 0.7rem; /* Smaller text for mobile */
+      font-size: 0.7rem;
   }
 }
 
-@media (max-width: 639px) {
+@media (max-width: 576px) {
   .brand-name span {
-      display: none; /* Hide text on very small screens */
+      display: none;
   }
-
+  
   .brand-logo {
-      height: 30px; /* Adjust logo size for very small screens */
+      height: 30px;
   }
-
-  .nav-link {
-      font-size: 0.9rem;
+  
+  .navbar.scrolled .brand-logo {
+      height: 26px;
   }
-
-  .nav-icon {
-      font-size: 1rem;
-  }
-
+  
   .nav-text {
-      font-size: 0.6rem; /* Smaller text for very small screens */
+      display: none;
+  }
+  
+  .nav-icon {
+      margin-bottom: 0;
+      font-size: 1.2rem;
+  }
+  
+  .navbar-links {
+      gap: 0.5rem;
   }
 }
