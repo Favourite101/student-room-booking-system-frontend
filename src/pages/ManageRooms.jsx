@@ -1,8 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
 import { getRooms, getRoomByCode, addRoom, deleteRoom } from '../api/roomService';
 import Room from '../components/Room';
-import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
-import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
+import SuccessMessage from '../components/SuccessMessage';
+import ErrorMessage from '../components/ErrorMessage';
 import '../css/ManageRooms.css';
 import { FaArrowUp, FaPlus } from 'react-icons/fa';
 
@@ -16,10 +17,16 @@ function ManageRooms() {
     roomNo: '',
     roomType: '', // Default to empty
   });
-  const [success, setSuccess] = useState(null); // State for success message
-  const [error, setError] = useState(null); // State for error message
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
-      const topRef = useRef(null);
+  const [isLoading, setIsLoading] = useState({
+    fetch: false,
+    search: false,
+    add: false,
+    delete: false
+  });
+  const topRef = useRef(null);
 
   // Check scroll position for scroll-to-top button
   useEffect(() => {
@@ -45,12 +52,15 @@ function ManageRooms() {
   // Fetch rooms on component mount
   useEffect(() => {
     const fetchRooms = async () => {
+      setIsLoading(prev => ({...prev, fetch: true}));
       try {
         const data = await getRooms();
         setRooms(data);
-        // eslint-disable-next-line no-unused-vars
       } catch (error) {
         console.log('Error.');
+        setError('Failed to fetch rooms. Please try again.');
+      } finally {
+        setIsLoading(prev => ({...prev, fetch: false}));
       }
     };
     fetchRooms();
@@ -59,6 +69,7 @@ function ManageRooms() {
   // Handle search
   const handleSearch = async (e) => {
     e.preventDefault();
+    setIsLoading(prev => ({...prev, search: true}));
     try {
       const data = await getRoomByCode(searchQuery);
       if (data) {
@@ -66,10 +77,11 @@ function ManageRooms() {
       } else {
         setError('No room found!');
       }
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setError('Search failed. Please try again.');
       console.log('Error.');
+    } finally {
+      setIsLoading(prev => ({...prev, search: false}));
     }
   };
 
@@ -87,10 +99,12 @@ function ManageRooms() {
   // Handle adding a new room
   const handleAddRoom = async (e) => {
     e.preventDefault();
+    setIsLoading(prev => ({...prev, add: true}));
 
     // Validate room number format
     if (!validateRoomNumber(newRoom.roomNo)) {
       setError('Room number must be a letter followed by two numbers (e.g., E21, F09).');
+      setIsLoading(prev => ({...prev, add: false}));
       return;
     }
 
@@ -105,10 +119,11 @@ function ManageRooms() {
       } else {
         setError('Failed to add room. Please try again.');
       }
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setError('Error adding room. Please try again.');
       console.log('Error.');
+    } finally {
+      setIsLoading(prev => ({...prev, add: false}));
     }
   };
 
@@ -121,16 +136,18 @@ function ManageRooms() {
   // Handle confirming delete
   const handleConfirmDelete = async () => {
     if (!selectedRoom) return;
+    setIsLoading(prev => ({...prev, delete: true}));
     try {
       await deleteRoom(selectedRoom.id);
       setRooms(rooms.filter((b) => b.id !== selectedRoom.id));
       setShowDeleteModal(false);
       setError('');
       setSuccess('Room deleted successfully!');
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setError('Error deleting room. Please try again.');
       console.log('Error.');
+    } finally {
+      setIsLoading(prev => ({...prev, delete: false}));
     }
   };
 
@@ -169,25 +186,25 @@ function ManageRooms() {
       {error && <ErrorMessage message={error} />}
 
       {/* Floating Add Button */}
-                  <button 
-                      className="floating-add-button"
-                      onClick={() => setShowAddModal(true)}
-                      aria-label="Add new room"
-                  >
-                      <FaPlus className="add-icon" />
-                      <span className="add-text">Add Room</span>
-                  </button>
+      <button 
+        className="floating-add-button"
+        onClick={() => setShowAddModal(true)}
+        aria-label="Add new room"
+      >
+        <FaPlus className="add-icon" />
+        <span className="add-text">Add Room</span>
+      </button>
       
-                  {/* Scroll to Top Button */}
-                  {showScrollButton && (
-                      <button 
-                          className="scroll-to-top"
-                          onClick={scrollToTop}
-                          aria-label="Scroll to top"
-                      >
-                          <FaArrowUp />
-                      </button>
-                  )}
+      {/* Scroll to Top Button */}
+      {showScrollButton && (
+        <button 
+          className="scroll-to-top"
+          onClick={scrollToTop}
+          aria-label="Scroll to top"
+        >
+          <FaArrowUp />
+        </button>
+      )}
 
       {/* Search Form */}
       <form onSubmit={handleSearch} className="search-form">
@@ -198,15 +215,28 @@ function ManageRooms() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <button type="submit" className="search-button">
-          Search
+        <button 
+          type="submit" 
+          className="search-button"
+          disabled={isLoading.search}
+        >
+          {isLoading.search ? (
+            <span className="loading-spinner"></span>
+          ) : (
+            "Search"
+          )}
         </button>
       </form>
       <br /><br />
 
       {/* Rooms Grid */}
       <div className="rooms-grid">
-        {rooms.length > 0 ? (
+        {isLoading.fetch ? (
+          <div className="loading-container">
+            <span className="loading-spinner"></span>
+            <p>Loading rooms...</p>
+          </div>
+        ) : rooms.length > 0 ? (
           rooms.map((room, index) => (
             <Room
               key={index}
@@ -249,11 +279,26 @@ function ManageRooms() {
               </select>
               <br />
               <br />
-              <button type="submit">Add Room</button>
+              <button 
+                type="submit" 
+                disabled={isLoading.add}
+              >
+                {isLoading.add ? (
+                  <span className="loading-spinner"></span>
+                ) : (
+                  "Add Room"
+                )}
+              </button>
               <br />
               <br />
             </form>
-            <button onClick={() => setShowAddModal(false)} className="close-button">Close</button>
+            <button 
+              onClick={() => setShowAddModal(false)} 
+              className="close-button"
+              disabled={isLoading.add}
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -265,10 +310,23 @@ function ManageRooms() {
             <h2>Are you sure?</h2>
             <p>Do you want to delete room: <strong>{selectedRoom.roomNo}</strong>?</p>
             <br />
-            <button onClick={handleConfirmDelete} className="delete">
-              Yes, Delete
+            <button 
+              onClick={handleConfirmDelete} 
+              className="delete"
+              disabled={isLoading.delete}
+            >
+              {isLoading.delete ? (
+                <span className="loading-spinner"></span>
+              ) : (
+                "Yes, Delete"
+              )}
             </button>
-            <button onClick={closeDeleteModal}>Cancel</button>
+            <button 
+              onClick={closeDeleteModal}
+              disabled={isLoading.delete}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}

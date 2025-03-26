@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { getStudents, getStudentByName, createStudent, updateStudent, deleteStudent } from '../api/studentService';
 import Student from '../components/Student';
-import SuccessMessage from '../components/SuccessMessage'; // Import SuccessMessage
-import ErrorMessage from '../components/ErrorMessage'; // Import ErrorMessage
+import SuccessMessage from '../components/SuccessMessage';
+import ErrorMessage from '../components/ErrorMessage';
 import '../css/ManageStudents.css';
 import { FaArrowUp, FaPlus } from 'react-icons/fa';
 
@@ -22,9 +23,16 @@ function ManageStudents() {
         image: '',
     });
     const [file, setFile] = useState(null);
-    const [success, setSuccess] = useState(null); // State for success message
-    const [error, setError] = useState(null); // State for error message
+    const [success, setSuccess] = useState(null);
+    const [error, setError] = useState(null);
     const [showScrollButton, setShowScrollButton] = useState(false);
+    const [isLoading, setIsLoading] = useState({
+        search: false,
+        add: false,
+        update: false,
+        delete: false,
+        fetch: false
+    });
     const topRef = useRef(null);
 
     // Check scroll position for scroll-to-top button
@@ -51,12 +59,15 @@ function ManageStudents() {
     // Fetch students on component mount
     useEffect(() => {
         const fetchStudents = async () => {
+            setIsLoading(prev => ({...prev, fetch: true}));
             try {
                 const data = await getStudents();
                 setStudents(data);
-                // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 console.log('Error.');
+                setError('Failed to fetch students. Please try again.');
+            } finally {
+                setIsLoading(prev => ({...prev, fetch: false}));
             }
         };
         fetchStudents();
@@ -65,6 +76,7 @@ function ManageStudents() {
     // Handle search
     const handleSearch = async (e) => {
         e.preventDefault();
+        setIsLoading(prev => ({...prev, search: true}));
         try {
             const data = await getStudentByName(searchQuery);
             if (data) {
@@ -72,10 +84,11 @@ function ManageStudents() {
             } else {
                 setError('No student found!');
             }
-            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError('Search failed. Please try again.');
             console.log('Error.');
+        } finally {
+            setIsLoading(prev => ({...prev, search: false}));
         }
     };
 
@@ -110,25 +123,30 @@ function ManageStudents() {
     // Handle adding a new student
     const handleAddStudent = async (e) => {
         e.preventDefault();
+        setIsLoading(prev => ({...prev, add: true}));
 
         // Input validation
         if (!newStudent.name || !newStudent.matricNo || !newStudent.email || !newStudent.phone || !file) {
             setError('All fields are required.');
+            setIsLoading(prev => ({...prev, add: false}));
             return;
         }
 
         if (!validateMatricNumber(newStudent.matricNo)) {
             setError('Matric number must be in the format "22/0345".');
+            setIsLoading(prev => ({...prev, add: false}));
             return;
         }
 
         if (!validateEmail(newStudent.email)) {
             setError('Please enter a valid email address.');
+            setIsLoading(prev => ({...prev, add: false}));
             return;
         }
 
         if (!validatePhoneNumber(newStudent.phone)) {
             setError('Phone number must be 11 digits.');
+            setIsLoading(prev => ({...prev, add: false}));
             return;
         }
 
@@ -143,10 +161,11 @@ function ManageStudents() {
             } else {
                 setError('Failed to add student. Please try again.');
             }
-            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError('Error adding student. Please try again.');
             console.log('Error.');
+        } finally {
+            setIsLoading(prev => ({...prev, add: false}));
         }
     };
 
@@ -164,15 +183,18 @@ function ManageStudents() {
     // Handle updating a student
     const handleUpdateStudent = async (e) => {
         e.preventDefault();
+        setIsLoading(prev => ({...prev, update: true}));
 
         // Input validation
         if (!validatePhoneNumber(selectedStudent.phone)) {
             setError('Phone number must be 11 digits.');
+            setIsLoading(prev => ({...prev, update: false}));
             return;
         }
 
         if (!validateEmail(selectedStudent.email)) {
             setError('Please enter a valid email address.');
+            setIsLoading(prev => ({...prev, update: false}));
             return;
         }
 
@@ -182,10 +204,11 @@ function ManageStudents() {
             setShowEditModal(false);
             setFile(null);
             setSuccess('Student updated successfully!');
-            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError('Error updating student. Please try again.');
             console.log('Error.');
+        } finally {
+            setIsLoading(prev => ({...prev, update: false}));
         }
     };
 
@@ -198,16 +221,18 @@ function ManageStudents() {
     // Handle confirming delete
     const handleConfirmDelete = async () => {
         if (!selectedStudent) return;
+        setIsLoading(prev => ({...prev, delete: true}));
         try {
             await deleteStudent(selectedStudent.id);
             setStudents(students.filter((r) => r.id !== selectedStudent.id));
             setShowEditModal(false);
             setShowDeleteModal(false);
             setSuccess('Student deleted successfully!');
-            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             setError('Error deleting student. Please try again.');
             console.log('Error.');
+        } finally {
+            setIsLoading(prev => ({...prev, delete: false}));
         }
     };
 
@@ -306,8 +331,16 @@ function ManageStudents() {
                         </div>
                         
                         <div className="modal-actions">
-                            <button type="submit" className="update-button">
-                                Save Changes
+                            <button 
+                                type="submit" 
+                                className="update-button"
+                                disabled={isLoading.update}
+                            >
+                                {isLoading.update ? (
+                                    <span className="loading-spinner"></span>
+                                ) : (
+                                    "Save Changes"
+                                )}
                             </button>
                             <button 
                                 type="button" 
@@ -359,15 +392,28 @@ function ManageStudents() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button type="submit" className="search-button">
-                    Search
+                <button 
+                    type="submit" 
+                    className="search-button"
+                    disabled={isLoading.search}
+                >
+                    {isLoading.search ? (
+                        <span className="loading-spinner"></span>
+                    ) : (
+                        "Search"
+                    )}
                 </button>
             </form>
             <br /><br />
 
             {/* Students Grid */}
             <div className="students-grid">
-                {students.length > 0 ? (
+                {isLoading.fetch ? (
+                    <div className="loading-container">
+                        <span className="loading-spinner"></span>
+                        <p>Loading students...</p>
+                    </div>
+                ) : students.length > 0 ? (
                     students.map((student, index) => (
                         <Student
                             key={index}
@@ -448,11 +494,26 @@ function ManageStudents() {
                             />
                             <br />
                             <br />
-                            <button type="submit">Add Student</button>
+                            <button 
+                                type="submit" 
+                                disabled={isLoading.add}
+                            >
+                                {isLoading.add ? (
+                                    <span className="loading-spinner"></span>
+                                ) : (
+                                    "Add Student"
+                                )}
+                            </button>
                             <br />
                             <br />
                         </form>
-                        <button onClick={() => setShowAddModal(false)} className="close-button">Close</button>
+                        <button 
+                            onClick={() => setShowAddModal(false)} 
+                            className="close-button"
+                            disabled={isLoading.add}
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             )}
@@ -467,10 +528,23 @@ function ManageStudents() {
                         <h2>Are you sure?</h2>
                         <p>Do you want to delete the student: <strong>{selectedStudent.name}</strong>?</p>
                         <br />
-                        <button onClick={handleConfirmDelete} className="delete">
-                            Yes, Delete
+                        <button 
+                            onClick={handleConfirmDelete} 
+                            className="delete"
+                            disabled={isLoading.delete}
+                        >
+                            {isLoading.delete ? (
+                                <span className="loading-spinner"></span>
+                            ) : (
+                                "Yes, Delete"
+                            )}
                         </button>
-                        <button onClick={closeDeleteModal}>Cancel</button>
+                        <button 
+                            onClick={closeDeleteModal}
+                            disabled={isLoading.delete}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             )}
