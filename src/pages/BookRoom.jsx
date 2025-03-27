@@ -109,7 +109,7 @@ function BookRoom() {
             } else if (error.message.includes("Room not found")) {
                 setError("Room does not exist.");
             } else if (error.message.includes("Payment code already exists")) {
-                setError("Payment code must be unique.");
+                setError("Payment code can be random but unique.");
             } else {
                 setError("Failed to process booking. Please try again.");
             }
@@ -231,7 +231,7 @@ function BookRoom() {
                         </motion.button>
                         <div className="form-note">
                             <p>• Ensure the student and room exist.</p>
-                            <p>• Payment code must be unique.</p>
+                            <p>• Payment code can be random but unique.</p>
                         </div>
                     </form>
                 </motion.div>
