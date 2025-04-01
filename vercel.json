@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      { "source": "/service-worker.js", "destination": "/service-worker.js" },
+      { "source": "/manifest.json", "destination": "/manifest.json" },
+      { "source": "/assets/:path*", "destination": "/assets/:path*" },
+      { "source": "/:path*", "destination": "/" }
+    ]
+  }
+  
