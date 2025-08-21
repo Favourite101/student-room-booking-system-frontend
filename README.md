@@ -3,7 +3,8 @@
 ## Overview
 A modern web application for intelligent room booking management with AI-powered recommendations and real-time analytics. Built with React and designed for enterprise-level operations.
 
-**Live Demo:** [https://room-booking-frontend.azurewebsites.net](https://room-booking-frontend.azurewebsites.net)
+**Live Demo:** [https://room-booking-frontend.azurewebsites.net](https://student-room-booking-system-frontend.vercel.app/smart-booking)
+**Backend Repository:** [https://github.com/Favourite101/student-room-booking-system-frontend](https://github.com/Favourite101/student-room-booking-system-backend)
 
 ## Key Features
 
