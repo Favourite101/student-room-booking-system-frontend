@@ -15,6 +15,10 @@ import VerifyOtpPage from './pages/VerifyOtpPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import NetworkStatusBanner from './components/NetworkStatusBanner';
 
+// Goldman Sachs AI-Enhanced Pages
+import SmartBooking from './pages/SmartBooking';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+
 function App() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
@@ -27,6 +31,11 @@ function App() {
     "/manage-students",
     "/manage-rooms",
     "/book-room",
+    "/smart-booking",
+    "/analytics-dashboard",
+    "/forgot-password",
+    "/verify-otp",
+    "/change-password"
   ].includes(location.pathname);
 
   return (
@@ -49,6 +58,10 @@ function App() {
               <Route path="/manage-students" element={<ManageStudents />} />
               <Route path="/manage-rooms" element={<ManageRooms />} />
               <Route path="/book-room" element={<BookRoom />} />
+              
+              {/* Goldman Sachs AI-Enhanced Routes */}
+              <Route path="/smart-booking" element={<SmartBooking />} />
+              <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
@@ -56,26 +69,31 @@ function App() {
         </main>
         <Footer />
       </div>
-      </>
+    </>
   );
 }
 
 export default App;
 
 {/**
-       * handle errors on the frontend, ----- DONE
-       * input validation, ------ DONE
-       * make pages modern (thanks deepseek) ------ DONE
-       * fix logout, ------ DONE
-       * upload student's picture, ---- DONE
-       * change swap logo, ----- DONE
-       * reduce the size of navbar elements on mobile, ------ DONE
-       * add a 404 page, --- DONE
-       * remove navbar from 404 page, ------- DONE
-       * add a footer, ------ DONE
-       * add a loading spinner, -------- DONE
-       * forgotPassword? ------ DONE
-       *            forgotPassword/verifyEmail/{email},
-       *            forgotPassword/verifyOtp/{otp}/{email},
-       *            changePassword/{email}/{otpToken}
-       */}
+ * handle errors on the frontend, ----- DONE
+ * input validation, ------ DONE
+ * make pages modern (thanks deepseek) ------ DONE
+ * fix logout, ------ DONE
+ * upload student's picture, ---- DONE
+ * change swap logo, ----- DONE
+ * reduce the size of navbar elements on mobile, ------ DONE
+ * add a 404 page, --- DONE
+ * remove navbar from 404 page, ------- DONE
+ * add a footer, ------ DONE
+ * add a loading spinner, -------- DONE
+ * forgotPassword? ------ DONE
+ *        forgotPassword/verifyEmail/{email},
+ *        forgotPassword/verifyOtp/{otp}/{email},
+ *        changePassword/{email}/{otpToken}
+ * GOLDMAN SACHS AI FEATURES ------ DONE
+ *        Smart Booking with AI recommendations
+ *        Analytics Dashboard with business intelligence
+ *        Real-time conflict analysis and resolution
+ *        System optimization metrics and suggestions
+ */}
